@@ -12,7 +12,7 @@ RUN apt-get update \
 # - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 # - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
 
-ENV DOCKER_VERSION 19.03.13
+ENV DOCKER_VERSION 20.10.7
 
 COPY --chown=root:root modprobe.sh /usr/local/bin/modprobe
 COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/
