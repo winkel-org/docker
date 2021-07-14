@@ -5,4 +5,4 @@ Internal images used to build the shoperal platform
 
 ## CICD Tools
 
-- [Java Docker](./cicd/javadocker)
+- [Java Docker](./shoperal/cicd/javadocker)
