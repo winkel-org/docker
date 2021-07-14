@@ -1,4 +1,8 @@
 # Docker with Java
 
-Java Version: `11`
-Docker Version: `19`
+## Release notes
+
+_0.0.1_
+
+- Java Version: `11`
+- Docker Version: `19`
