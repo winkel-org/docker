@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk
+FROM maven:3.8.2-openjdk-17
 
 RUN apt-get update \
     && apt-get install -y apt-transport-https ca-certificates curl gnupg2 lsb-release \
@@ -12,7 +12,7 @@ RUN apt-get update \
 # - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 # - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
 
-ENV DOCKER_VERSION 20.10.7
+ENV DOCKER_VERSION 20.10.10
 
 COPY --chown=root:root modprobe.sh /usr/local/bin/modprobe
 COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/
