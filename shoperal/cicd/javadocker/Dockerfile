@@ -1,17 +1,14 @@
 FROM maven:3.8.3-openjdk-17
 
-RUN apk add --no-cache \
+RUN microdnf install -y \
 		ca-certificates \
-# Workaround for golang not producing a static ctr binary on Go 1.15 and up https://github.com/containerd/containerd/issues/5824
-		libc6-compat \
-# DOCKER_HOST=ssh://... -- https://github.com/docker/cli/pull/1014
-		openssh-client
+        wget
 
 # set up nsswitch.conf for Go's "netgo" implementation (which Docker explicitly uses)
 # - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
 # - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 # - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
-RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+RUN echo 'hosts: files dns' > /etc/nsswitch.conf
 
 ENV DOCKER_VERSION 20.10.10
 # TODO ENV DOCKER_SHA256
@@ -20,7 +17,7 @@ ENV DOCKER_VERSION 20.10.10
 
 RUN set -eux; \
 	\
-	apkArch="$(apk --print-arch)"; \
+	apkArch="$(arch)"; \
 	case "$apkArch" in \
 		'x86_64') \
 			url='https://download.docker.com/linux/static/stable/x86_64/docker-20.10.10.tgz'; \
@@ -58,7 +55,7 @@ COPY docker-entrypoint.sh /usr/local/bin/
 # (For this to work, at least the "client" subdirectory of this path needs to be shared between the client and server containers via a volume, "docker cp", or other means of data sharing.)
 ENV DOCKER_TLS_CERTDIR=/certs
 # also, ensure the directory pre-exists and has wide enough permissions for "dockerd-entrypoint.sh" to create subdirectories, even when run in "rootless" mode
-RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
+RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client && chmod +x /usr/local/bin/docker-entrypoint.sh
 # (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
 
 ENTRYPOINT ["docker-entrypoint.sh"]
