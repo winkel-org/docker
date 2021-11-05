@@ -1,19 +1,8 @@
 FROM maven:3.8.3-openjdk-17
 
-RUN microdnf install -y \
-		ca-certificates \
-        wget
-
-# set up nsswitch.conf for Go's "netgo" implementation (which Docker explicitly uses)
-# - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
-# - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
-# - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
-RUN echo 'hosts: files dns' > /etc/nsswitch.conf
+RUN microdnf install -y wget
 
 ENV DOCKER_VERSION 20.10.10
-# TODO ENV DOCKER_SHA256
-# https://github.com/docker/docker-ce/blob/5b073ee2cf564edee5adca05eee574142f7627bb/components/packaging/static/hash_files !!
-# (no SHA file artifacts on download.docker.com yet as of 2017-06-07 though)
 
 RUN set -eux; \
 	\
